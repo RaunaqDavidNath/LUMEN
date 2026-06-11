@@ -1,0 +1,173 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "type": "base_table",
+      "id": "customers"
+    },
+    {
+      "type": "base_table",
+      "id": "categories"
+    },
+    {
+      "type": "base_table",
+      "id": "suppliers"
+    },
+    {
+      "type": "base_table",
+      "id": "products"
+    },
+    {
+      "type": "base_table",
+      "id": "orders"
+    },
+    {
+      "type": "base_table",
+      "id": "order_items"
+    },
+    {
+      "type": "view",
+      "id": "stg_orders"
+    },
+    {
+      "type": "view",
+      "id": "stg_order_items"
+    },
+    {
+      "type": "view",
+      "id": "dim_customers"
+    },
+    {
+      "type": "view",
+      "id": "dim_products"
+    },
+    {
+      "type": "view",
+      "id": "fct_order_revenue"
+    },
+    {
+      "type": "view",
+      "id": "product_sales_summary"
+    },
+    {
+      "type": "view",
+      "id": "customer_lifetime_value"
+    },
+    {
+      "type": "view",
+      "id": "category_revenue"
+    },
+    {
+      "type": "view",
+      "id": "supplier_performance"
+    },
+    {
+      "type": "view",
+      "id": "monthly_revenue"
+    },
+    {
+      "type": "view",
+      "id": "customer_country_revenue"
+    },
+    {
+      "type": "view",
+      "id": "top_customers"
+    },
+    {
+      "type": "view",
+      "id": "repeat_customers"
+    },
+    {
+      "type": "view",
+      "id": "avg_order_value_by_segment"
+    },
+    {
+      "type": "view",
+      "id": "category_supplier_matrix"
+    }
+  ],
+  "edges": [
+    {
+      "source": "customers",
+      "target": "dim_customers"
+    },
+    {
+      "source": "categories",
+      "target": "dim_products"
+    },
+    {
+      "source": "suppliers",
+      "target": "dim_products"
+    },
+    {
+      "source": "products",
+      "target": "dim_products"
+    },
+    {
+      "source": "orders",
+      "target": "stg_orders"
+    },
+    {
+      "source": "order_items",
+      "target": "stg_order_items"
+    },
+    {
+      "source": "stg_orders",
+      "target": "fct_order_revenue"
+    },
+    {
+      "source": "stg_order_items",
+      "target": "fct_order_revenue"
+    },
+    {
+      "source": "stg_order_items",
+      "target": "product_sales_summary"
+    },
+    {
+      "source": "dim_customers",
+      "target": "customer_lifetime_value"
+    },
+    {
+      "source": "dim_products",
+      "target": "product_sales_summary"
+    },
+    {
+      "source": "dim_products",
+      "target": "category_supplier_matrix"
+    },
+    {
+      "source": "fct_order_revenue",
+      "target": "customer_lifetime_value"
+    },
+    {
+      "source": "fct_order_revenue",
+      "target": "monthly_revenue"
+    },
+    {
+      "source": "product_sales_summary",
+      "target": "category_revenue"
+    },
+    {
+      "source": "product_sales_summary",
+      "target": "supplier_performance"
+    },
+    {
+      "source": "customer_lifetime_value",
+      "target": "customer_country_revenue"
+    },
+    {
+      "source": "customer_lifetime_value",
+      "target": "top_customers"
+    },
+    {
+      "source": "customer_lifetime_value",
+      "target": "repeat_customers"
+    },
+    {
+      "source": "customer_lifetime_value",
+      "target": "avg_order_value_by_segment"
+    }
+  ]
+}

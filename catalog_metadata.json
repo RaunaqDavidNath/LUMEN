@@ -1,0 +1,553 @@
+{
+  "customers": {
+    "type": "base_table",
+    "columns": [
+      "customer_id",
+      "name",
+      "email",
+      "country",
+      "signup_date"
+    ],
+    "sql": null,
+    "source_tables": [],
+    "description": "This table contains detailed information about each customer, including their contact details, country, and signup date.",
+    "glossary_term": "Customer Profiles",
+    "owner": "Customer Analytics Team"
+  },
+  "categories": {
+    "type": "base_table",
+    "columns": [
+      "category_id",
+      "name"
+    ],
+    "sql": null,
+    "source_tables": [],
+    "description": "This table contains a master list of all available categories, each identified by a unique ID and name.",
+    "glossary_term": "Product Categories",
+    "owner": "Product Management team"
+  },
+  "suppliers": {
+    "type": "base_table",
+    "columns": [
+      "supplier_id",
+      "name",
+      "country"
+    ],
+    "sql": null,
+    "source_tables": [],
+    "description": "This table lists all suppliers, including their unique identifiers, names, and countries of origin.",
+    "glossary_term": "Supplier Information",
+    "owner": "Procurement Team"
+  },
+  "products": {
+    "type": "base_table",
+    "columns": [
+      "product_id",
+      "name",
+      "category_id",
+      "supplier_id",
+      "price"
+    ],
+    "sql": null,
+    "source_tables": [],
+    "description": "This table stores detailed information about all products offered, including their prices and categories.",
+    "glossary_term": "Product Master Data",
+    "owner": "Product Management team"
+  },
+  "orders": {
+    "type": "base_table",
+    "columns": [
+      "order_id",
+      "customer_id",
+      "order_date",
+      "status"
+    ],
+    "sql": null,
+    "source_tables": [],
+    "description": "This table contains individual customer order details, including a unique order identifier, the associated customer, the date the order was placed, and its current fulfillment status.",
+    "glossary_term": "Customer Orders",
+    "owner": "Operations Team"
+  },
+  "order_items": {
+    "type": "base_table",
+    "columns": [
+      "order_item_id",
+      "order_id",
+      "product_id",
+      "quantity",
+      "unit_price"
+    ],
+    "sql": null,
+    "source_tables": [],
+    "description": "This table contains details for each individual item included in customer orders, specifying the product, quantity, and unit price.",
+    "glossary_term": "Order Line Items",
+    "owner": "Sales Operations team"
+  },
+  "stg_orders": {
+    "type": "view",
+    "columns": [
+      "order_id",
+      "customer_id",
+      "order_date",
+      "status"
+    ],
+    "sql": "/* transformations.sql */ /* ---------------------------------------------------------------------- */ /* These are \"transformation models\" \u2014 the kind of layered SQL views you'd */ /* find in a real warehouse (think dbt staging -> intermediate -> mart */ /* layers). Each one builds on base tables and/or earlier views, which is */ /* exactly what creates the multi-hop \"lineage graph\" we want to extract. */ /* Layers: */ /*   staging     : stg_*           -> light cleanup of raw tables */ /*   facts/dims  : fct_*, dim_*     -> joined, business-friendly tables */ /*   marts       : everything else  -> aggregated, analysis-ready tables */ /* ---------------------------------------------------------------------- */ /* ===================== STAGING LAYER ===================== */ /* 1. Clean orders: drop cancelled orders, normalize date */\nCREATE VIEW stg_orders AS\nSELECT\n  order_id,\n  customer_id,\n  order_date,\n  status\nFROM orders\nWHERE\n  status <> 'cancelled'",
+    "source_tables": [
+      "orders"
+    ],
+    "column_lineage": {
+      "order_id": [
+        "orders.order_id"
+      ],
+      "customer_id": [
+        "orders.customer_id"
+      ],
+      "order_date": [
+        "orders.order_date"
+      ],
+      "status": [
+        "orders.status"
+      ]
+    },
+    "description": "This view provides a foundational, lightly transformed set of order records, intended for downstream analytical models.",
+    "glossary_term": "Staging Orders",
+    "owner": "Data Engineering team"
+  },
+  "stg_order_items": {
+    "type": "view",
+    "columns": [
+      "order_item_id",
+      "order_id",
+      "product_id",
+      "quantity",
+      "unit_price",
+      "line_total"
+    ],
+    "sql": "/* 2. Clean order items: precompute line-level revenue */\nCREATE VIEW stg_order_items AS\nSELECT\n  order_item_id,\n  order_id,\n  product_id,\n  quantity,\n  unit_price,\n  quantity * unit_price AS line_total\nFROM order_items",
+    "source_tables": [
+      "order_items"
+    ],
+    "column_lineage": {
+      "order_item_id": [
+        "order_items.order_item_id"
+      ],
+      "order_id": [
+        "order_items.order_id"
+      ],
+      "product_id": [
+        "order_items.product_id"
+      ],
+      "quantity": [
+        "order_items.quantity"
+      ],
+      "unit_price": [
+        "order_items.unit_price"
+      ],
+      "line_total": [
+        "order_items.quantity",
+        "order_items.unit_price"
+      ]
+    },
+    "description": "This view contains cleaned order item details including the calculated line-level revenue for each item in an order.",
+    "glossary_term": "Cleaned Order Items",
+    "owner": "Data Analytics team"
+  },
+  "dim_customers": {
+    "type": "view",
+    "columns": [
+      "customer_id",
+      "name",
+      "email",
+      "country",
+      "signup_date",
+      "customer_segment"
+    ],
+    "sql": "/* 3. Customer dimension: add a derived \"segment\" based on signup date */\nCREATE VIEW dim_customers AS\nSELECT\n  customer_id,\n  name,\n  email,\n  country,\n  signup_date,\n  CASE WHEN signup_date < '2023-01-01' THEN 'legacy' ELSE 'new' END AS customer_segment\nFROM customers",
+    "source_tables": [
+      "customers"
+    ],
+    "column_lineage": {
+      "customer_id": [
+        "customers.customer_id"
+      ],
+      "name": [
+        "customers.name"
+      ],
+      "email": [
+        "customers.email"
+      ],
+      "country": [
+        "customers.country"
+      ],
+      "signup_date": [
+        "customers.signup_date"
+      ],
+      "customer_segment": [
+        "customers.signup_date"
+      ]
+    },
+    "description": "This view provides core customer information, including a derived segment based on their signup date.",
+    "glossary_term": "Customer Segments",
+    "owner": "Data Analytics team"
+  },
+  "dim_products": {
+    "type": "view",
+    "columns": [
+      "product_id",
+      "product_name",
+      "price",
+      "category_name",
+      "supplier_name",
+      "supplier_country"
+    ],
+    "sql": "/* 4. Product dimension: denormalize category + supplier info */\nCREATE VIEW dim_products AS\nSELECT\n  p.product_id,\n  p.name AS product_name,\n  p.price,\n  c.name AS category_name,\n  s.name AS supplier_name,\n  s.country AS supplier_country\nFROM products AS p\nJOIN categories AS c\n  ON p.category_id = c.category_id\nJOIN suppliers AS s\n  ON p.supplier_id = s.supplier_id",
+    "source_tables": [
+      "categories",
+      "products",
+      "suppliers"
+    ],
+    "column_lineage": {
+      "product_id": [
+        "products.product_id"
+      ],
+      "product_name": [
+        "products.name"
+      ],
+      "price": [
+        "products.price"
+      ],
+      "category_name": [
+        "categories.name"
+      ],
+      "supplier_name": [
+        "suppliers.name"
+      ],
+      "supplier_country": [
+        "suppliers.country"
+      ]
+    },
+    "description": "This view provides a comprehensive, denormalized list of all products, including their category and supplier information.",
+    "glossary_term": "Product Master Data",
+    "owner": "Data Analytics team"
+  },
+  "fct_order_revenue": {
+    "type": "view",
+    "columns": [
+      "order_id",
+      "customer_id",
+      "order_date",
+      "order_revenue"
+    ],
+    "sql": "/* ===================== FACT LAYER ===================== */ /* 5. Order-level revenue: join cleaned orders with cleaned line items */\nCREATE VIEW fct_order_revenue AS\nSELECT\n  o.order_id,\n  o.customer_id,\n  o.order_date,\n  SUM(oi.line_total) AS order_revenue\nFROM stg_orders AS o\nJOIN stg_order_items AS oi\n  ON o.order_id = oi.order_id\nGROUP BY\n  o.order_id,\n  o.customer_id,\n  o.order_date",
+    "source_tables": [
+      "stg_order_items",
+      "stg_orders"
+    ],
+    "column_lineage": {
+      "order_id": [
+        "stg_orders.order_id"
+      ],
+      "customer_id": [
+        "stg_orders.customer_id"
+      ],
+      "order_date": [
+        "stg_orders.order_date"
+      ],
+      "order_revenue": [
+        "stg_order_items.line_total"
+      ]
+    },
+    "description": "This view aggregates order line items to calculate the total revenue for each order, including customer and order date information.",
+    "glossary_term": "Order Revenue",
+    "owner": "Finance Analytics team"
+  },
+  "product_sales_summary": {
+    "type": "view",
+    "columns": [
+      "product_id",
+      "product_name",
+      "category_name",
+      "supplier_name",
+      "units_sold",
+      "total_revenue"
+    ],
+    "sql": "/* 6. Product sales summary: combine cleaned line items with product dimension */\nCREATE VIEW product_sales_summary AS\nSELECT\n  oi.product_id,\n  dp.product_name,\n  dp.category_name,\n  dp.supplier_name,\n  SUM(oi.quantity) AS units_sold,\n  SUM(oi.line_total) AS total_revenue\nFROM stg_order_items AS oi\nJOIN dim_products AS dp\n  ON oi.product_id = dp.product_id\nGROUP BY\n  oi.product_id,\n  dp.product_name,\n  dp.category_name,\n  dp.supplier_name",
+    "source_tables": [
+      "dim_products",
+      "stg_order_items"
+    ],
+    "column_lineage": {
+      "product_id": [
+        "stg_order_items.product_id"
+      ],
+      "product_name": [
+        "dim_products.product_name"
+      ],
+      "category_name": [
+        "dim_products.category_name"
+      ],
+      "supplier_name": [
+        "dim_products.supplier_name"
+      ],
+      "units_sold": [
+        "stg_order_items.quantity"
+      ],
+      "total_revenue": [
+        "stg_order_items.line_total"
+      ]
+    },
+    "description": "This view provides a summarized overview of product sales, including units sold and total revenue, along with product details such as category and supplier.",
+    "glossary_term": "Product Sales Summary",
+    "owner": "Sales Analytics team"
+  },
+  "customer_lifetime_value": {
+    "type": "view",
+    "columns": [
+      "customer_id",
+      "name",
+      "country",
+      "customer_segment",
+      "lifetime_value",
+      "total_orders"
+    ],
+    "sql": "/* ===================== MART LAYER ===================== */ /* 7. Customer lifetime value: combine order revenue with customer dimension */\nCREATE VIEW customer_lifetime_value AS\nSELECT\n  f.customer_id,\n  d.name,\n  d.country,\n  d.customer_segment,\n  SUM(f.order_revenue) AS lifetime_value,\n  COUNT(f.order_id) AS total_orders\nFROM fct_order_revenue AS f\nJOIN dim_customers AS d\n  ON f.customer_id = d.customer_id\nGROUP BY\n  f.customer_id,\n  d.name,\n  d.country,\n  d.customer_segment",
+    "source_tables": [
+      "dim_customers",
+      "fct_order_revenue"
+    ],
+    "column_lineage": {
+      "customer_id": [
+        "fct_order_revenue.customer_id"
+      ],
+      "name": [
+        "dim_customers.name"
+      ],
+      "country": [
+        "dim_customers.country"
+      ],
+      "customer_segment": [
+        "dim_customers.customer_segment"
+      ],
+      "lifetime_value": [
+        "fct_order_revenue.order_revenue"
+      ],
+      "total_orders": [
+        "fct_order_revenue.order_id"
+      ]
+    },
+    "description": "This view provides the lifetime value and total orders for each customer, along with their key demographic and segment information.",
+    "glossary_term": "Customer Lifetime Value",
+    "owner": "Sales Analytics team"
+  },
+  "category_revenue": {
+    "type": "view",
+    "columns": [
+      "category_name",
+      "category_revenue",
+      "category_units"
+    ],
+    "sql": "/* 8. Revenue by category */\nCREATE VIEW category_revenue AS\nSELECT\n  category_name,\n  SUM(total_revenue) AS category_revenue,\n  SUM(units_sold) AS category_units\nFROM product_sales_summary\nGROUP BY\n  category_name",
+    "source_tables": [
+      "product_sales_summary"
+    ],
+    "column_lineage": {
+      "category_name": [
+        "product_sales_summary.category_name"
+      ],
+      "category_revenue": [
+        "product_sales_summary.total_revenue"
+      ],
+      "category_units": [
+        "product_sales_summary.units_sold"
+      ]
+    },
+    "description": "This view provides the total revenue and units sold for each product category.",
+    "glossary_term": "Product Category Revenue",
+    "owner": "Sales Analytics team"
+  },
+  "supplier_performance": {
+    "type": "view",
+    "columns": [
+      "supplier_name",
+      "product_count",
+      "supplier_revenue"
+    ],
+    "sql": "/* 9. Supplier performance */\nCREATE VIEW supplier_performance AS\nSELECT\n  supplier_name,\n  COUNT(DISTINCT product_id) AS product_count,\n  SUM(total_revenue) AS supplier_revenue\nFROM product_sales_summary\nGROUP BY\n  supplier_name",
+    "source_tables": [
+      "product_sales_summary"
+    ],
+    "column_lineage": {
+      "supplier_name": [
+        "product_sales_summary.supplier_name"
+      ],
+      "product_count": [
+        "product_sales_summary.product_id"
+      ],
+      "supplier_revenue": [
+        "product_sales_summary.total_revenue"
+      ]
+    },
+    "description": "This view aggregates sales data to provide key performance metrics for each supplier, including product count and total revenue.",
+    "glossary_term": "Supplier Performance",
+    "owner": "Procurement Analytics team"
+  },
+  "monthly_revenue": {
+    "type": "view",
+    "columns": [
+      "month",
+      "monthly_revenue",
+      "order_count"
+    ],
+    "sql": "/* 10. Monthly revenue trend */\nCREATE VIEW monthly_revenue AS\nSELECT\n  STRFTIME('%Y-%m', order_date) AS month,\n  SUM(order_revenue) AS monthly_revenue,\n  COUNT(order_id) AS order_count\nFROM fct_order_revenue\nGROUP BY\n  month",
+    "source_tables": [
+      "fct_order_revenue"
+    ],
+    "column_lineage": {
+      "month": [
+        "fct_order_revenue.order_date"
+      ],
+      "monthly_revenue": [
+        "fct_order_revenue.order_revenue"
+      ],
+      "order_count": [
+        "fct_order_revenue.order_id"
+      ]
+    },
+    "description": "This view provides a monthly summary of total revenue and the corresponding number of orders.",
+    "glossary_term": "Monthly Revenue Summary",
+    "owner": "Sales Analytics team"
+  },
+  "customer_country_revenue": {
+    "type": "view",
+    "columns": [
+      "country",
+      "country_revenue",
+      "customer_count"
+    ],
+    "sql": "/* 11. Revenue by customer country */\nCREATE VIEW customer_country_revenue AS\nSELECT\n  country,\n  SUM(lifetime_value) AS country_revenue,\n  COUNT(customer_id) AS customer_count\nFROM customer_lifetime_value\nGROUP BY\n  country",
+    "source_tables": [
+      "customer_lifetime_value"
+    ],
+    "column_lineage": {
+      "country": [
+        "customer_lifetime_value.country"
+      ],
+      "country_revenue": [
+        "customer_lifetime_value.lifetime_value"
+      ],
+      "customer_count": [
+        "customer_lifetime_value.customer_id"
+      ]
+    },
+    "description": "This view provides the total revenue and customer count broken down by country.",
+    "glossary_term": "Customer Country Revenue",
+    "owner": "Sales Analytics team"
+  },
+  "top_customers": {
+    "type": "view",
+    "columns": [
+      "customer_id",
+      "name",
+      "country",
+      "lifetime_value",
+      "total_orders"
+    ],
+    "sql": "/* 12. Top customers by lifetime value */\nCREATE VIEW top_customers AS\nSELECT\n  customer_id,\n  name,\n  country,\n  lifetime_value,\n  total_orders\nFROM customer_lifetime_value\nWHERE\n  lifetime_value > 100\nORDER BY\n  lifetime_value DESC",
+    "source_tables": [
+      "customer_lifetime_value"
+    ],
+    "column_lineage": {
+      "customer_id": [
+        "customer_lifetime_value.customer_id"
+      ],
+      "name": [
+        "customer_lifetime_value.name"
+      ],
+      "country": [
+        "customer_lifetime_value.country"
+      ],
+      "lifetime_value": [
+        "customer_lifetime_value.lifetime_value"
+      ],
+      "total_orders": [
+        "customer_lifetime_value.total_orders"
+      ]
+    },
+    "description": "This view identifies high-value customers based on their lifetime value and total orders, filtering for those with a lifetime value greater than 100.",
+    "glossary_term": "Top Customers",
+    "owner": "Sales Analytics team"
+  },
+  "repeat_customers": {
+    "type": "view",
+    "columns": [
+      "customer_id",
+      "name",
+      "total_orders"
+    ],
+    "sql": "/* 13. Repeat customers (more than one order) */\nCREATE VIEW repeat_customers AS\nSELECT\n  customer_id,\n  name,\n  total_orders\nFROM customer_lifetime_value\nWHERE\n  total_orders > 1",
+    "source_tables": [
+      "customer_lifetime_value"
+    ],
+    "column_lineage": {
+      "customer_id": [
+        "customer_lifetime_value.customer_id"
+      ],
+      "name": [
+        "customer_lifetime_value.name"
+      ],
+      "total_orders": [
+        "customer_lifetime_value.total_orders"
+      ]
+    },
+    "description": "This view lists customers who have placed more than one order, along with their names and total order counts.",
+    "glossary_term": "Repeat Customers",
+    "owner": "Sales Analytics team"
+  },
+  "avg_order_value_by_segment": {
+    "type": "view",
+    "columns": [
+      "customer_segment",
+      "avg_order_value"
+    ],
+    "sql": "/* 14. Average order value by customer segment */\nCREATE VIEW avg_order_value_by_segment AS\nSELECT\n  customer_segment,\n  AVG(lifetime_value * 1.0 / total_orders) AS avg_order_value\nFROM customer_lifetime_value\nGROUP BY\n  customer_segment",
+    "source_tables": [
+      "customer_lifetime_value"
+    ],
+    "column_lineage": {
+      "customer_segment": [
+        "customer_lifetime_value.customer_segment"
+      ],
+      "avg_order_value": [
+        "customer_lifetime_value.lifetime_value",
+        "customer_lifetime_value.total_orders"
+      ]
+    },
+    "description": "This view calculates the average order value for each customer segment based on their lifetime value.",
+    "glossary_term": "Average Order Value",
+    "owner": "Customer Analytics team"
+  },
+  "category_supplier_matrix": {
+    "type": "view",
+    "columns": [
+      "category_name",
+      "supplier_name",
+      "product_count"
+    ],
+    "sql": "/* 15. Category x supplier matrix */\nCREATE VIEW category_supplier_matrix AS\nSELECT\n  category_name,\n  supplier_name,\n  COUNT(*) AS product_count\nFROM dim_products\nGROUP BY\n  category_name,\n  supplier_name",
+    "source_tables": [
+      "dim_products"
+    ],
+    "column_lineage": {
+      "category_name": [
+        "dim_products.category_name"
+      ],
+      "supplier_name": [
+        "dim_products.supplier_name"
+      ],
+      "product_count": []
+    },
+    "description": "A cross-reference matrix showing how many products each supplier provides within each product category.",
+    "glossary_term": "Category Supplier Matrix",
+    "owner": "Supply Chain Analytics team"
+  }
+}

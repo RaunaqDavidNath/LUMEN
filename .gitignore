@@ -1,0 +1,17 @@
+# database — regenerate with: python3 setup_db.py
+lumen.db
+
+# old archive
+lumen-week1.zip
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# macOS
+.DS_Store
+
+# secrets — never commit
+.env*

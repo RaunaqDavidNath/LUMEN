@@ -1,0 +1,700 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "table": "customers",
+      "type": "base_table",
+      "id": "customers.customer_id"
+    },
+    {
+      "table": "customers",
+      "type": "base_table",
+      "id": "customers.name"
+    },
+    {
+      "table": "customers",
+      "type": "base_table",
+      "id": "customers.email"
+    },
+    {
+      "table": "customers",
+      "type": "base_table",
+      "id": "customers.country"
+    },
+    {
+      "table": "customers",
+      "type": "base_table",
+      "id": "customers.signup_date"
+    },
+    {
+      "table": "categories",
+      "type": "base_table",
+      "id": "categories.category_id"
+    },
+    {
+      "table": "categories",
+      "type": "base_table",
+      "id": "categories.name"
+    },
+    {
+      "table": "suppliers",
+      "type": "base_table",
+      "id": "suppliers.supplier_id"
+    },
+    {
+      "table": "suppliers",
+      "type": "base_table",
+      "id": "suppliers.name"
+    },
+    {
+      "table": "suppliers",
+      "type": "base_table",
+      "id": "suppliers.country"
+    },
+    {
+      "table": "products",
+      "type": "base_table",
+      "id": "products.product_id"
+    },
+    {
+      "table": "products",
+      "type": "base_table",
+      "id": "products.name"
+    },
+    {
+      "table": "products",
+      "type": "base_table",
+      "id": "products.category_id"
+    },
+    {
+      "table": "products",
+      "type": "base_table",
+      "id": "products.supplier_id"
+    },
+    {
+      "table": "products",
+      "type": "base_table",
+      "id": "products.price"
+    },
+    {
+      "table": "orders",
+      "type": "base_table",
+      "id": "orders.order_id"
+    },
+    {
+      "table": "orders",
+      "type": "base_table",
+      "id": "orders.customer_id"
+    },
+    {
+      "table": "orders",
+      "type": "base_table",
+      "id": "orders.order_date"
+    },
+    {
+      "table": "orders",
+      "type": "base_table",
+      "id": "orders.status"
+    },
+    {
+      "table": "order_items",
+      "type": "base_table",
+      "id": "order_items.order_item_id"
+    },
+    {
+      "table": "order_items",
+      "type": "base_table",
+      "id": "order_items.order_id"
+    },
+    {
+      "table": "order_items",
+      "type": "base_table",
+      "id": "order_items.product_id"
+    },
+    {
+      "table": "order_items",
+      "type": "base_table",
+      "id": "order_items.quantity"
+    },
+    {
+      "table": "order_items",
+      "type": "base_table",
+      "id": "order_items.unit_price"
+    },
+    {
+      "table": "stg_orders",
+      "type": "view",
+      "id": "stg_orders.order_id"
+    },
+    {
+      "table": "stg_orders",
+      "type": "view",
+      "id": "stg_orders.customer_id"
+    },
+    {
+      "table": "stg_orders",
+      "type": "view",
+      "id": "stg_orders.order_date"
+    },
+    {
+      "table": "stg_orders",
+      "type": "view",
+      "id": "stg_orders.status"
+    },
+    {
+      "table": "stg_order_items",
+      "type": "view",
+      "id": "stg_order_items.order_item_id"
+    },
+    {
+      "table": "stg_order_items",
+      "type": "view",
+      "id": "stg_order_items.order_id"
+    },
+    {
+      "table": "stg_order_items",
+      "type": "view",
+      "id": "stg_order_items.product_id"
+    },
+    {
+      "table": "stg_order_items",
+      "type": "view",
+      "id": "stg_order_items.quantity"
+    },
+    {
+      "table": "stg_order_items",
+      "type": "view",
+      "id": "stg_order_items.unit_price"
+    },
+    {
+      "table": "stg_order_items",
+      "type": "view",
+      "id": "stg_order_items.line_total"
+    },
+    {
+      "table": "dim_customers",
+      "type": "view",
+      "id": "dim_customers.customer_id"
+    },
+    {
+      "table": "dim_customers",
+      "type": "view",
+      "id": "dim_customers.name"
+    },
+    {
+      "table": "dim_customers",
+      "type": "view",
+      "id": "dim_customers.email"
+    },
+    {
+      "table": "dim_customers",
+      "type": "view",
+      "id": "dim_customers.country"
+    },
+    {
+      "table": "dim_customers",
+      "type": "view",
+      "id": "dim_customers.signup_date"
+    },
+    {
+      "table": "dim_customers",
+      "type": "view",
+      "id": "dim_customers.customer_segment"
+    },
+    {
+      "table": "dim_products",
+      "type": "view",
+      "id": "dim_products.product_id"
+    },
+    {
+      "table": "dim_products",
+      "type": "view",
+      "id": "dim_products.product_name"
+    },
+    {
+      "table": "dim_products",
+      "type": "view",
+      "id": "dim_products.price"
+    },
+    {
+      "table": "dim_products",
+      "type": "view",
+      "id": "dim_products.category_name"
+    },
+    {
+      "table": "dim_products",
+      "type": "view",
+      "id": "dim_products.supplier_name"
+    },
+    {
+      "table": "dim_products",
+      "type": "view",
+      "id": "dim_products.supplier_country"
+    },
+    {
+      "table": "fct_order_revenue",
+      "type": "view",
+      "id": "fct_order_revenue.order_id"
+    },
+    {
+      "table": "fct_order_revenue",
+      "type": "view",
+      "id": "fct_order_revenue.customer_id"
+    },
+    {
+      "table": "fct_order_revenue",
+      "type": "view",
+      "id": "fct_order_revenue.order_date"
+    },
+    {
+      "table": "fct_order_revenue",
+      "type": "view",
+      "id": "fct_order_revenue.order_revenue"
+    },
+    {
+      "table": "product_sales_summary",
+      "type": "view",
+      "id": "product_sales_summary.product_id"
+    },
+    {
+      "table": "product_sales_summary",
+      "type": "view",
+      "id": "product_sales_summary.product_name"
+    },
+    {
+      "table": "product_sales_summary",
+      "type": "view",
+      "id": "product_sales_summary.category_name"
+    },
+    {
+      "table": "product_sales_summary",
+      "type": "view",
+      "id": "product_sales_summary.supplier_name"
+    },
+    {
+      "table": "product_sales_summary",
+      "type": "view",
+      "id": "product_sales_summary.units_sold"
+    },
+    {
+      "table": "product_sales_summary",
+      "type": "view",
+      "id": "product_sales_summary.total_revenue"
+    },
+    {
+      "table": "customer_lifetime_value",
+      "type": "view",
+      "id": "customer_lifetime_value.customer_id"
+    },
+    {
+      "table": "customer_lifetime_value",
+      "type": "view",
+      "id": "customer_lifetime_value.name"
+    },
+    {
+      "table": "customer_lifetime_value",
+      "type": "view",
+      "id": "customer_lifetime_value.country"
+    },
+    {
+      "table": "customer_lifetime_value",
+      "type": "view",
+      "id": "customer_lifetime_value.customer_segment"
+    },
+    {
+      "table": "customer_lifetime_value",
+      "type": "view",
+      "id": "customer_lifetime_value.lifetime_value"
+    },
+    {
+      "table": "customer_lifetime_value",
+      "type": "view",
+      "id": "customer_lifetime_value.total_orders"
+    },
+    {
+      "table": "category_revenue",
+      "type": "view",
+      "id": "category_revenue.category_name"
+    },
+    {
+      "table": "category_revenue",
+      "type": "view",
+      "id": "category_revenue.category_revenue"
+    },
+    {
+      "table": "category_revenue",
+      "type": "view",
+      "id": "category_revenue.category_units"
+    },
+    {
+      "table": "supplier_performance",
+      "type": "view",
+      "id": "supplier_performance.supplier_name"
+    },
+    {
+      "table": "supplier_performance",
+      "type": "view",
+      "id": "supplier_performance.product_count"
+    },
+    {
+      "table": "supplier_performance",
+      "type": "view",
+      "id": "supplier_performance.supplier_revenue"
+    },
+    {
+      "table": "monthly_revenue",
+      "type": "view",
+      "id": "monthly_revenue.month"
+    },
+    {
+      "table": "monthly_revenue",
+      "type": "view",
+      "id": "monthly_revenue.monthly_revenue"
+    },
+    {
+      "table": "monthly_revenue",
+      "type": "view",
+      "id": "monthly_revenue.order_count"
+    },
+    {
+      "table": "customer_country_revenue",
+      "type": "view",
+      "id": "customer_country_revenue.country"
+    },
+    {
+      "table": "customer_country_revenue",
+      "type": "view",
+      "id": "customer_country_revenue.country_revenue"
+    },
+    {
+      "table": "customer_country_revenue",
+      "type": "view",
+      "id": "customer_country_revenue.customer_count"
+    },
+    {
+      "table": "top_customers",
+      "type": "view",
+      "id": "top_customers.customer_id"
+    },
+    {
+      "table": "top_customers",
+      "type": "view",
+      "id": "top_customers.name"
+    },
+    {
+      "table": "top_customers",
+      "type": "view",
+      "id": "top_customers.country"
+    },
+    {
+      "table": "top_customers",
+      "type": "view",
+      "id": "top_customers.lifetime_value"
+    },
+    {
+      "table": "top_customers",
+      "type": "view",
+      "id": "top_customers.total_orders"
+    },
+    {
+      "table": "repeat_customers",
+      "type": "view",
+      "id": "repeat_customers.customer_id"
+    },
+    {
+      "table": "repeat_customers",
+      "type": "view",
+      "id": "repeat_customers.name"
+    },
+    {
+      "table": "repeat_customers",
+      "type": "view",
+      "id": "repeat_customers.total_orders"
+    },
+    {
+      "table": "avg_order_value_by_segment",
+      "type": "view",
+      "id": "avg_order_value_by_segment.customer_segment"
+    },
+    {
+      "table": "avg_order_value_by_segment",
+      "type": "view",
+      "id": "avg_order_value_by_segment.avg_order_value"
+    },
+    {
+      "table": "category_supplier_matrix",
+      "type": "view",
+      "id": "category_supplier_matrix.category_name"
+    },
+    {
+      "table": "category_supplier_matrix",
+      "type": "view",
+      "id": "category_supplier_matrix.supplier_name"
+    },
+    {
+      "table": "category_supplier_matrix",
+      "type": "view",
+      "id": "category_supplier_matrix.product_count"
+    }
+  ],
+  "edges": [
+    {
+      "source": "customers.customer_id",
+      "target": "dim_customers.customer_id"
+    },
+    {
+      "source": "customers.name",
+      "target": "dim_customers.name"
+    },
+    {
+      "source": "customers.email",
+      "target": "dim_customers.email"
+    },
+    {
+      "source": "customers.country",
+      "target": "dim_customers.country"
+    },
+    {
+      "source": "customers.signup_date",
+      "target": "dim_customers.signup_date"
+    },
+    {
+      "source": "customers.signup_date",
+      "target": "dim_customers.customer_segment"
+    },
+    {
+      "source": "categories.name",
+      "target": "dim_products.category_name"
+    },
+    {
+      "source": "suppliers.name",
+      "target": "dim_products.supplier_name"
+    },
+    {
+      "source": "suppliers.country",
+      "target": "dim_products.supplier_country"
+    },
+    {
+      "source": "products.product_id",
+      "target": "dim_products.product_id"
+    },
+    {
+      "source": "products.name",
+      "target": "dim_products.product_name"
+    },
+    {
+      "source": "products.price",
+      "target": "dim_products.price"
+    },
+    {
+      "source": "orders.order_id",
+      "target": "stg_orders.order_id"
+    },
+    {
+      "source": "orders.customer_id",
+      "target": "stg_orders.customer_id"
+    },
+    {
+      "source": "orders.order_date",
+      "target": "stg_orders.order_date"
+    },
+    {
+      "source": "orders.status",
+      "target": "stg_orders.status"
+    },
+    {
+      "source": "order_items.order_item_id",
+      "target": "stg_order_items.order_item_id"
+    },
+    {
+      "source": "order_items.order_id",
+      "target": "stg_order_items.order_id"
+    },
+    {
+      "source": "order_items.product_id",
+      "target": "stg_order_items.product_id"
+    },
+    {
+      "source": "order_items.quantity",
+      "target": "stg_order_items.quantity"
+    },
+    {
+      "source": "order_items.quantity",
+      "target": "stg_order_items.line_total"
+    },
+    {
+      "source": "order_items.unit_price",
+      "target": "stg_order_items.unit_price"
+    },
+    {
+      "source": "order_items.unit_price",
+      "target": "stg_order_items.line_total"
+    },
+    {
+      "source": "stg_orders.order_id",
+      "target": "fct_order_revenue.order_id"
+    },
+    {
+      "source": "stg_orders.customer_id",
+      "target": "fct_order_revenue.customer_id"
+    },
+    {
+      "source": "stg_orders.order_date",
+      "target": "fct_order_revenue.order_date"
+    },
+    {
+      "source": "stg_order_items.product_id",
+      "target": "product_sales_summary.product_id"
+    },
+    {
+      "source": "stg_order_items.quantity",
+      "target": "product_sales_summary.units_sold"
+    },
+    {
+      "source": "stg_order_items.line_total",
+      "target": "fct_order_revenue.order_revenue"
+    },
+    {
+      "source": "stg_order_items.line_total",
+      "target": "product_sales_summary.total_revenue"
+    },
+    {
+      "source": "dim_customers.name",
+      "target": "customer_lifetime_value.name"
+    },
+    {
+      "source": "dim_customers.country",
+      "target": "customer_lifetime_value.country"
+    },
+    {
+      "source": "dim_customers.customer_segment",
+      "target": "customer_lifetime_value.customer_segment"
+    },
+    {
+      "source": "dim_products.product_name",
+      "target": "product_sales_summary.product_name"
+    },
+    {
+      "source": "dim_products.category_name",
+      "target": "product_sales_summary.category_name"
+    },
+    {
+      "source": "dim_products.category_name",
+      "target": "category_supplier_matrix.category_name"
+    },
+    {
+      "source": "dim_products.supplier_name",
+      "target": "product_sales_summary.supplier_name"
+    },
+    {
+      "source": "dim_products.supplier_name",
+      "target": "category_supplier_matrix.supplier_name"
+    },
+    {
+      "source": "fct_order_revenue.order_id",
+      "target": "customer_lifetime_value.total_orders"
+    },
+    {
+      "source": "fct_order_revenue.order_id",
+      "target": "monthly_revenue.order_count"
+    },
+    {
+      "source": "fct_order_revenue.customer_id",
+      "target": "customer_lifetime_value.customer_id"
+    },
+    {
+      "source": "fct_order_revenue.order_date",
+      "target": "monthly_revenue.month"
+    },
+    {
+      "source": "fct_order_revenue.order_revenue",
+      "target": "customer_lifetime_value.lifetime_value"
+    },
+    {
+      "source": "fct_order_revenue.order_revenue",
+      "target": "monthly_revenue.monthly_revenue"
+    },
+    {
+      "source": "product_sales_summary.product_id",
+      "target": "supplier_performance.product_count"
+    },
+    {
+      "source": "product_sales_summary.category_name",
+      "target": "category_revenue.category_name"
+    },
+    {
+      "source": "product_sales_summary.supplier_name",
+      "target": "supplier_performance.supplier_name"
+    },
+    {
+      "source": "product_sales_summary.units_sold",
+      "target": "category_revenue.category_units"
+    },
+    {
+      "source": "product_sales_summary.total_revenue",
+      "target": "category_revenue.category_revenue"
+    },
+    {
+      "source": "product_sales_summary.total_revenue",
+      "target": "supplier_performance.supplier_revenue"
+    },
+    {
+      "source": "customer_lifetime_value.customer_id",
+      "target": "customer_country_revenue.customer_count"
+    },
+    {
+      "source": "customer_lifetime_value.customer_id",
+      "target": "top_customers.customer_id"
+    },
+    {
+      "source": "customer_lifetime_value.customer_id",
+      "target": "repeat_customers.customer_id"
+    },
+    {
+      "source": "customer_lifetime_value.name",
+      "target": "top_customers.name"
+    },
+    {
+      "source": "customer_lifetime_value.name",
+      "target": "repeat_customers.name"
+    },
+    {
+      "source": "customer_lifetime_value.country",
+      "target": "customer_country_revenue.country"
+    },
+    {
+      "source": "customer_lifetime_value.country",
+      "target": "top_customers.country"
+    },
+    {
+      "source": "customer_lifetime_value.customer_segment",
+      "target": "avg_order_value_by_segment.customer_segment"
+    },
+    {
+      "source": "customer_lifetime_value.lifetime_value",
+      "target": "customer_country_revenue.country_revenue"
+    },
+    {
+      "source": "customer_lifetime_value.lifetime_value",
+      "target": "top_customers.lifetime_value"
+    },
+    {
+      "source": "customer_lifetime_value.lifetime_value",
+      "target": "avg_order_value_by_segment.avg_order_value"
+    },
+    {
+      "source": "customer_lifetime_value.total_orders",
+      "target": "top_customers.total_orders"
+    },
+    {
+      "source": "customer_lifetime_value.total_orders",
+      "target": "repeat_customers.total_orders"
+    },
+    {
+      "source": "customer_lifetime_value.total_orders",
+      "target": "avg_order_value_by_segment.avg_order_value"
+    }
+  ]
+}
