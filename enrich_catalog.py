@@ -66,7 +66,10 @@ def main():
             result = enrich(name, info)
             info["description"] = result.get("description", "")
             info["glossary_term"] = result.get("glossary_term", "")
-            info["owner"] = result.get("owner", "")
+            # The model is inconsistent about capitalising "Team", which
+            # would show the same team twice in the UI owner filter.
+            owner = result.get("owner", "")
+            info["owner"] = " ".join(w.capitalize() for w in owner.split())
             print(f"done ({result.get('glossary_term', '')})")
         except Exception as e:
             print(f"ERROR: {e}")

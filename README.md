@@ -69,7 +69,8 @@ files/
 ├── enrich_catalog.py        # AI enrichment via Gemini 2.0 Flash
 ├── embed_catalog.py         # Generates embeddings for semantic search
 ├── embedding_config.py      # Shared embedding model name and task types
-├── app.py                   # Streamlit catalog UI
+├── app.py                   # Streamlit catalog UI (Catalog and Help sections)
+├── .streamlit/config.toml   # UI theme
 ├── lumen_mcp.py             # MCP server for Claude Desktop
 ├── catalog_metadata.json    # 21 assets, all AI-enriched
 ├── table_lineage.json       # Table-level lineage graph
@@ -118,7 +119,16 @@ python3 embed_catalog.py
 streamlit run app.py
 ```
 
-Opens at `http://localhost:8501`. Toggle between keyword and semantic search modes.
+Opens at `http://localhost:8501`.
+
+The sidebar switches between two sections. **Catalog** is the searchable grid of
+assets, with filters for asset type and owning team. **Help** explains how to use
+it step by step.
+
+Use the **Semantic** switch next to the search box to match on meaning instead of
+exact words. Semantic results show a match percentage, and anything below a
+similarity of 0.57 is discarded so an unrelated query returns nothing rather than
+a page of weak matches.
 
 ### 6. Connect to Claude Desktop
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:

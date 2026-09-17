@@ -1,0 +1,14 @@
+# Theme for the Lumen catalog UI.
+# Muted navy on a near-white surface. Deliberately low saturation so the
+# metadata on the page carries the attention rather than the chrome.
+
+[theme]
+base = "light"
+primaryColor = "#31567A"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F6F8FA"
+textColor = "#1A2332"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"

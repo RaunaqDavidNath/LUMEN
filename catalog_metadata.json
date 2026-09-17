@@ -24,7 +24,7 @@
     "source_tables": [],
     "description": "This table contains a master list of all available categories, each identified by a unique ID and name.",
     "glossary_term": "Product Categories",
-    "owner": "Product Management team"
+    "owner": "Product Management Team"
   },
   "suppliers": {
     "type": "base_table",
@@ -52,7 +52,7 @@
     "source_tables": [],
     "description": "This table stores detailed information about all products offered, including their prices and categories.",
     "glossary_term": "Product Master Data",
-    "owner": "Product Management team"
+    "owner": "Product Management Team"
   },
   "orders": {
     "type": "base_table",
@@ -81,7 +81,7 @@
     "source_tables": [],
     "description": "This table contains details for each individual item included in customer orders, specifying the product, quantity, and unit price.",
     "glossary_term": "Order Line Items",
-    "owner": "Sales Operations team"
+    "owner": "Sales Operations Team"
   },
   "stg_orders": {
     "type": "view",
@@ -111,7 +111,7 @@
     },
     "description": "This view provides a foundational, lightly transformed set of order records, intended for downstream analytical models.",
     "glossary_term": "Staging Orders",
-    "owner": "Data Engineering team"
+    "owner": "Data Engineering Team"
   },
   "stg_order_items": {
     "type": "view",
@@ -150,7 +150,7 @@
     },
     "description": "This view contains cleaned order item details including the calculated line-level revenue for each item in an order.",
     "glossary_term": "Cleaned Order Items",
-    "owner": "Data Analytics team"
+    "owner": "Data Analytics Team"
   },
   "dim_customers": {
     "type": "view",
@@ -188,7 +188,7 @@
     },
     "description": "This view provides core customer information, including a derived segment based on their signup date.",
     "glossary_term": "Customer Segments",
-    "owner": "Data Analytics team"
+    "owner": "Data Analytics Team"
   },
   "dim_products": {
     "type": "view",
@@ -228,7 +228,7 @@
     },
     "description": "This view provides a comprehensive, denormalized list of all products, including their category and supplier information.",
     "glossary_term": "Product Master Data",
-    "owner": "Data Analytics team"
+    "owner": "Data Analytics Team"
   },
   "fct_order_revenue": {
     "type": "view",
@@ -259,7 +259,7 @@
     },
     "description": "This view aggregates order line items to calculate the total revenue for each order, including customer and order date information.",
     "glossary_term": "Order Revenue",
-    "owner": "Finance Analytics team"
+    "owner": "Finance Analytics Team"
   },
   "product_sales_summary": {
     "type": "view",
@@ -298,7 +298,7 @@
     },
     "description": "This view provides a summarized overview of product sales, including units sold and total revenue, along with product details such as category and supplier.",
     "glossary_term": "Product Sales Summary",
-    "owner": "Sales Analytics team"
+    "owner": "Sales Analytics Team"
   },
   "customer_lifetime_value": {
     "type": "view",
@@ -337,7 +337,7 @@
     },
     "description": "This view provides the lifetime value and total orders for each customer, along with their key demographic and segment information.",
     "glossary_term": "Customer Lifetime Value",
-    "owner": "Sales Analytics team"
+    "owner": "Sales Analytics Team"
   },
   "category_revenue": {
     "type": "view",
@@ -363,7 +363,7 @@
     },
     "description": "This view provides the total revenue and units sold for each product category.",
     "glossary_term": "Product Category Revenue",
-    "owner": "Sales Analytics team"
+    "owner": "Sales Analytics Team"
   },
   "supplier_performance": {
     "type": "view",
@@ -389,7 +389,7 @@
     },
     "description": "This view aggregates sales data to provide key performance metrics for each supplier, including product count and total revenue.",
     "glossary_term": "Supplier Performance",
-    "owner": "Procurement Analytics team"
+    "owner": "Procurement Analytics Team"
   },
   "monthly_revenue": {
     "type": "view",
@@ -415,7 +415,7 @@
     },
     "description": "This view provides a monthly summary of total revenue and the corresponding number of orders.",
     "glossary_term": "Monthly Revenue Summary",
-    "owner": "Sales Analytics team"
+    "owner": "Sales Analytics Team"
   },
   "customer_country_revenue": {
     "type": "view",
@@ -441,7 +441,7 @@
     },
     "description": "This view provides the total revenue and customer count broken down by country.",
     "glossary_term": "Customer Country Revenue",
-    "owner": "Sales Analytics team"
+    "owner": "Sales Analytics Team"
   },
   "top_customers": {
     "type": "view",
@@ -475,7 +475,7 @@
     },
     "description": "This view identifies high-value customers based on their lifetime value and total orders, filtering for those with a lifetime value greater than 100.",
     "glossary_term": "Top Customers",
-    "owner": "Sales Analytics team"
+    "owner": "Sales Analytics Team"
   },
   "repeat_customers": {
     "type": "view",
@@ -501,7 +501,7 @@
     },
     "description": "This view lists customers who have placed more than one order, along with their names and total order counts.",
     "glossary_term": "Repeat Customers",
-    "owner": "Sales Analytics team"
+    "owner": "Sales Analytics Team"
   },
   "avg_order_value_by_segment": {
     "type": "view",
@@ -524,7 +524,7 @@
     },
     "description": "This view calculates the average order value for each customer segment based on their lifetime value.",
     "glossary_term": "Average Order Value",
-    "owner": "Customer Analytics team"
+    "owner": "Customer Analytics Team"
   },
   "category_supplier_matrix": {
     "type": "view",
@@ -548,6 +548,6 @@
     },
     "description": "A cross-reference matrix showing how many products each supplier provides within each product category.",
     "glossary_term": "Category Supplier Matrix",
-    "owner": "Supply Chain Analytics team"
+    "owner": "Supply Chain Analytics Team"
   }
 }
