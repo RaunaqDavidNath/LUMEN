@@ -1,6 +1,13 @@
 # Theme for the Lumen catalog UI.
-# Muted navy on a near-white surface. Deliberately low saturation so the
-# metadata on the page carries the attention rather than the chrome.
+#
+# Two full palettes: [theme] is light, [theme.dark] is dark. Streamlit picks
+# between them from the app menu at the top right, under Settings then
+# Appearance, and follows the operating system by default. Defining both here
+# rather than styling dark mode by hand means every widget themes correctly,
+# including dataframes and SQL blocks, which custom CSS cannot reach.
+#
+# app.py reads the active theme with st.context.theme.type and matches its own
+# card and badge colours to whichever one is showing.
 
 [theme]
 base = "light"
@@ -8,7 +15,23 @@ primaryColor = "#31567A"
 backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F6F8FA"
 textColor = "#1A2332"
+borderColor = "#DFE5EC"
+linkColor = "#31567A"
+codeBackgroundColor = "#F6F8FA"
+font = "sans serif"
+
+[theme.dark]
+primaryColor = "#6E9BC9"
+backgroundColor = "#0F1720"
+secondaryBackgroundColor = "#18212C"
+textColor = "#E3E9F0"
+borderColor = "#2A3744"
+linkColor = "#8FBCE4"
+codeBackgroundColor = "#141D27"
+dataframeHeaderBackgroundColor = "#18212C"
 font = "sans serif"
 
 [client]
-toolbarMode = "minimal"
+# "viewer" keeps the settings menu (which holds the theme switch) while
+# hiding the developer-only entries.
+toolbarMode = "viewer"

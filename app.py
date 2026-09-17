@@ -21,17 +21,59 @@ BASE_DIR = Path(__file__).parent
 st.set_page_config(page_title="Lumen Catalog", layout="wide")
 
 # --- Palette ----------------------------------------------------------------
-# Navy and teal, both desaturated, on a near-white surface. Kept quiet on
-# purpose: the metadata should carry the page rather than the chrome. Matching
-# values live in .streamlit/config.toml so Streamlit's own widgets agree.
-INK = "#1A2332"
-MUTED = "#5F6F81"
-BORDER = "#DFE5EC"
-NAVY = "#31567A"
-TEAL = "#2E6F5E"
+# Navy and teal, both desaturated, in a light and a dark variant. The reader
+# switches theme from the app menu at the top right (Settings, then
+# Appearance); Streamlit themes its own widgets from .streamlit/config.toml
+# and we match the cards and badges to whichever theme is showing.
+#
+# The dark badge colours are lifted a little so white badge text still has
+# enough contrast, and the dark accent is lightened because it is used as
+# text on a dark background rather than as a fill.
+PALETTES = {
+    "light": {
+        "ink": "#1A2332",
+        "muted": "#5F6F81",
+        "border": "#DFE5EC",
+        "badge_table": "#31567A",
+        "badge_view": "#2E6F5E",
+        "accent": "#31567A",
+    },
+    "dark": {
+        "ink": "#E3E9F0",
+        "muted": "#94A3B4",
+        "border": "#2A3744",
+        "badge_table": "#3E6B99",
+        "badge_view": "#347C66",
+        "accent": "#8FBCE4",
+    },
+}
+
+
+def active_palette():
+    """Colours for the theme the browser is currently showing.
+
+    st.context.theme.type is "light" or "dark", and is None when there is no
+    browser attached (for example under Streamlit's test harness), so light
+    is the fallback.
+    """
+    try:
+        theme = st.context.theme.type or "light"
+    except Exception:
+        theme = "light"
+    return PALETTES.get(theme, PALETTES["light"])
+
+
+COLOURS = active_palette()
+INK = COLOURS["ink"]
+MUTED = COLOURS["muted"]
+BORDER = COLOURS["border"]
+ACCENT = COLOURS["accent"]
 
 # Asset type -> (badge text, badge colour)
-TYPE_STYLE = {"base_table": ("Table", NAVY), "view": ("View", TEAL)}
+TYPE_STYLE = {
+    "base_table": ("Table", COLOURS["badge_table"]),
+    "view": ("View", COLOURS["badge_view"]),
+}
 
 # Semantic matches weaker than this are dropped, so an unrelated query
 # returns nothing instead of a page of confident looking cards.
@@ -81,7 +123,7 @@ CSS = """
   .lumen-help p, .lumen-help li { font-size: 13.5px; color: __MUTED__;
                                   line-height: 1.65; }
   .lumen-step { display: inline-block; width: 21px; height: 21px;
-                border-radius: 50%; background: __NAVY__; color: #fff;
+                border-radius: 50%; background: __STEP__; color: #fff;
                 font-size: 11px; font-weight: 700; text-align: center;
                 line-height: 21px; margin-right: 7px; }
 
@@ -91,7 +133,8 @@ CSS = """
 </style>
 """
 for token, value in [("__INK__", INK), ("__MUTED__", MUTED),
-                     ("__BORDER__", BORDER), ("__NAVY__", NAVY)]:
+                     ("__BORDER__", BORDER), ("__NAVY__", ACCENT),
+                     ("__STEP__", COLOURS["badge_table"])]:
     CSS = CSS.replace(token, value)
 st.markdown(CSS, unsafe_allow_html=True)
 
@@ -200,6 +243,11 @@ HELP_STEPS = [
      "customers view even though it contains neither <em>spend</em> nor "
      "<em>money</em>. Each result shows a match percentage so you can "
      "judge how close it is."),
+    ("Switch between light and dark",
+     "Open the menu at the <strong>top right</strong> of the page, then "
+     "<strong>Settings</strong> and <strong>Appearance</strong>. Pick Light, "
+     "Dark, or leave it following your computer's own setting. Both themes "
+     "use the same navy and teal palette."),
     ("Narrow the list",
      "The sidebar filters restrict the grid by asset type and by owning "
      "team. They combine with whatever is in the search box. "
@@ -229,8 +277,9 @@ def render_help():
         )
 
     left, right = st.columns(2, gap="large")
+    half = (len(HELP_STEPS) + 1) // 2
     for index, (heading, body) in enumerate(HELP_STEPS):
-        target = left if index < 3 else right
+        target = left if index < half else right
         with target:
             st.markdown(
                 f'<div class="lumen-help"><h3><span class="lumen-step">'
@@ -544,6 +593,10 @@ with st.sidebar:
     st.caption(
         "Semantic search ready" if has_embeddings
         else "Semantic search unavailable. Run embed_catalog.py to enable it."
+    )
+    st.caption(
+        "Light and dark themes: use the menu at the top right, "
+        "then Settings and Appearance."
     )
 
 if st.session_state.selected:
