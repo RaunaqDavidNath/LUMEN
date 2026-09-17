@@ -55,8 +55,14 @@ def get_query_embedding(query):
         return None
     try:
         from google import genai
+        from google.genai import types
+        from embedding_config import EMBEDDING_MODEL, TASK_TYPE_QUERY
         client = genai.Client(api_key=api_key)
-        result = client.models.embed_content(model="text-embedding-004", contents=query)
+        result = client.models.embed_content(
+            model=EMBEDDING_MODEL,
+            contents=query,
+            config=types.EmbedContentConfig(task_type=TASK_TYPE_QUERY),
+        )
         return result.embeddings[0].values
     except Exception:
         return None

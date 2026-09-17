@@ -1,9 +1,6 @@
 # database — regenerate with: python3 setup_db.py
 lumen.db
 
-# embeddings — regenerate with: python3 embed_catalog.py
-embeddings.json
-
 # old archive
 lumen-week1.zip
 

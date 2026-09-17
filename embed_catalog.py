@@ -4,13 +4,15 @@ Run this once (or re-run whenever catalog_metadata.json changes).
 
 Output: embeddings.json  — { asset_name: [float, float, ...] }
 
-Uses Gemini text-embedding-004 (free tier: 1500 req/day, 5 req/min).
+Uses the model named in embedding_config.py (free tier: 5 req/min).
 """
 
 import json
 import time
 import os
 from google import genai
+from google.genai import types
+from embedding_config import EMBEDDING_MODEL, TASK_TYPE_DOCUMENT
 
 CATALOG_PATH = "catalog_metadata.json"
 EMBEDDINGS_PATH = "embeddings.json"
@@ -39,8 +41,9 @@ def embed(text):
     for attempt in range(5):
         try:
             result = client.models.embed_content(
-                model="text-embedding-004",
+                model=EMBEDDING_MODEL,
                 contents=text,
+                config=types.EmbedContentConfig(task_type=TASK_TYPE_DOCUMENT),
             )
             return result.embeddings[0].values
         except Exception as e:

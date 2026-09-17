@@ -226,8 +226,14 @@ def semantic_search(query: str, top_k: int = 5) -> str:
 
     try:
         from google import genai
+        from google.genai import types
+        from embedding_config import EMBEDDING_MODEL, TASK_TYPE_QUERY
         client = genai.Client(api_key=api_key)
-        result = client.models.embed_content(model="text-embedding-004", contents=query)
+        result = client.models.embed_content(
+            model=EMBEDDING_MODEL,
+            contents=query,
+            config=types.EmbedContentConfig(task_type=TASK_TYPE_QUERY),
+        )
         query_vec = result.embeddings[0].values
     except Exception as e:
         return f"Failed to embed query: {e}"

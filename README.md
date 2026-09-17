@@ -68,6 +68,7 @@ files/
 ├── visualize_lineage.py     # Renders lineage_graph.html (pyvis)
 ├── enrich_catalog.py        # AI enrichment via Gemini 2.0 Flash
 ├── embed_catalog.py         # Generates embeddings for semantic search
+├── embedding_config.py      # Shared embedding model name and task types
 ├── app.py                   # Streamlit catalog UI
 ├── lumen_mcp.py             # MCP server for Claude Desktop
 ├── catalog_metadata.json    # 21 assets, all AI-enriched
@@ -161,7 +162,7 @@ Restart Claude Desktop. You can then ask it things like:
 | Graph visualization | `pyvis` |
 | Database | SQLite |
 | AI enrichment | Gemini 2.0 Flash |
-| Semantic search | Gemini `text-embedding-004` |
+| Semantic search | Gemini `gemini-embedding-001` |
 | UI | Streamlit |
 | AI agent interface | FastMCP |
 | Gemini client | google-genai |
