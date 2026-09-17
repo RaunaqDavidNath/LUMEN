@@ -27,6 +27,11 @@ import networkx as nx
 BASE_DIR = os.path.dirname(__file__)
 SCHEMA_PATH = os.path.join(BASE_DIR, "schema.sql")
 TRANSFORM_PATH = os.path.join(BASE_DIR, "transformations.sql")
+CATALOG_PATH = os.path.join(BASE_DIR, "catalog_metadata.json")
+
+# Fields written by enrich_catalog.py, not by this parser. Re-parsing SQL must
+# not throw them away, or every re-run would cost a full round of API calls.
+ENRICHED_FIELDS = ("description", "glossary_term", "owner")
 
 DIALECT = "sqlite"
 
@@ -108,6 +113,30 @@ def parse_transformations(path):
     return metadata
 
 
+def merge_enrichment(catalog, path):
+    """Copy AI-generated fields from an existing catalog file onto a fresh parse.
+
+    The parser rebuilds structure (columns, SQL, lineage) from the .sql files,
+    so anything it does not know about has to be carried over by hand.
+    """
+    try:
+        with open(path) as f:
+            previous = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return 0
+
+    carried = 0
+    for name, info in catalog.items():
+        old = previous.get(name)
+        if not old:
+            continue
+        for field in ENRICHED_FIELDS:
+            if old.get(field) and not info.get(field):
+                info[field] = old[field]
+                carried += 1
+    return carried
+
+
 def build_graphs(catalog):
     table_graph = nx.DiGraph()
     column_graph = nx.DiGraph()
@@ -137,10 +166,11 @@ def main():
     view_meta = parse_transformations(TRANSFORM_PATH)
 
     catalog = {**base_meta, **view_meta}
+    carried = merge_enrichment(catalog, CATALOG_PATH)
     table_graph, column_graph = build_graphs(catalog)
 
-    # Save catalog metadata (will be enriched with AI descriptions in week 2-3)
-    with open(os.path.join(BASE_DIR, "catalog_metadata.json"), "w") as f:
+    # Save catalog metadata, keeping any AI enrichment from a previous run
+    with open(CATALOG_PATH, "w") as f:
         json.dump(catalog, f, indent=2)
 
     # Save graphs in node-link JSON format
@@ -157,6 +187,8 @@ def main():
           f"{table_graph.number_of_edges()} edges")
     print(f"Column-level graph: {column_graph.number_of_nodes()} nodes, "
           f"{column_graph.number_of_edges()} edges")
+    if carried:
+        print(f"Kept {carried} AI-enriched fields from the previous catalog")
 
     print("\nExample — full lineage of 'customer_lifetime_value':")
     for ancestor in nx.ancestors(table_graph, "customer_lifetime_value"):

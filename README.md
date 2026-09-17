@@ -74,6 +74,7 @@ files/
 ├── table_lineage.json       # Table-level lineage graph
 ├── column_lineage.json      # Column-level lineage graph
 ├── lineage_graph.html       # Interactive lineage visualization
+├── embeddings.json          # Vector embeddings (generated, git-ignored)
 └── requirements.txt
 ```
 
@@ -94,6 +95,9 @@ python3 visualize_lineage.py
 ```
 
 Open `lineage_graph.html` in a browser to explore the lineage graph interactively.
+
+Re-running `lineage_parser.py` later is safe: it rebuilds structure and lineage from
+the `.sql` files while keeping any AI enrichment already in `catalog_metadata.json`.
 
 ### 3. Enrich the catalog with AI descriptions
 ```bash
@@ -160,3 +164,4 @@ Restart Claude Desktop. You can then ask it things like:
 | Semantic search | Gemini `text-embedding-004` |
 | UI | Streamlit |
 | AI agent interface | FastMCP |
+| Gemini client | google-genai |

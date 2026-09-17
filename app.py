@@ -1,7 +1,12 @@
 import json
 import math
 import os
+from pathlib import Path
 import streamlit as st
+
+# Resolve data files next to this script, not against the current working
+# directory, so the app also runs when launched from elsewhere (e.g. a container).
+BASE_DIR = Path(__file__).parent
 
 st.set_page_config(page_title="Lumen Catalog", layout="wide", page_icon="💡")
 
@@ -10,14 +15,14 @@ TYPE_BADGE = {"base_table": ("TABLE", "#1565C0"), "view": ("VIEW", "#2e7d32")}
 
 @st.cache_data
 def load_catalog():
-    with open("catalog_metadata.json") as f:
+    with open(BASE_DIR / "catalog_metadata.json") as f:
         return json.load(f)
 
 
 @st.cache_data
 def load_embeddings():
-    path = "embeddings.json"
-    if not os.path.exists(path):
+    path = BASE_DIR / "embeddings.json"
+    if not path.exists():
         return {}
     with open(path) as f:
         return json.load(f)
