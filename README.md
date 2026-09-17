@@ -156,6 +156,43 @@ Restart Claude Desktop. You can then ask it things like:
 
 ---
 
+## Deploying to Cloud Run
+
+The app is packaged by the `Dockerfile`. It listens on the port Cloud Run
+provides and binds to `0.0.0.0`, and `catalog_metadata.json` plus
+`embeddings.json` are both in the repository, so the image is self contained.
+`lumen.db` is not needed at run time.
+
+Semantic search calls Gemini for every query, so the deployed service needs
+`GEMINI_API_KEY`. Keep it in Secret Manager rather than passing it as a plain
+environment variable. Without the key the app still runs and falls back to
+keyword search.
+
+```bash
+# one time setup
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com \
+    artifactregistry.googleapis.com secretmanager.googleapis.com
+
+printf %s "$GEMINI_API_KEY" | gcloud secrets create gemini-api-key \
+    --data-file=- --replication-policy=automatic
+
+# build from source and deploy
+gcloud run deploy lumen-catalog \
+    --source . \
+    --region asia-south1 \
+    --allow-unauthenticated \
+    --memory 1Gi \
+    --max-instances 3 \
+    --session-affinity \
+    --set-secrets GEMINI_API_KEY=gemini-api-key:latest
+```
+
+`--session-affinity` matters: Streamlit holds an open websocket, so a reconnect
+needs to reach the same instance. `--max-instances` caps what the service can
+ever cost.
+
+---
+
 ## MCP tools
 
 | Tool | Description |

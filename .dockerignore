@@ -1,0 +1,20 @@
+# Never bake secrets into the image. The API key is supplied at run time.
+.env
+.env.*
+
+# Not used by the app at run time
+lumen.db
+lumen-week1.zip
+lineage_graph.html
+
+# Repository and editor noise
+.git
+.gitignore
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+Dockerfile
+.dockerignore
