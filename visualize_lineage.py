@@ -3,7 +3,7 @@ visualize_lineage.py
 ---------------------
 Loads table_lineage.json (produced by lineage_parser.py) and renders it as
 an interactive HTML graph using pyvis. Open lineage_graph.html in a browser
-afterwards — you can drag nodes, zoom, and hover for details.
+afterwards. You can drag nodes, zoom, and hover for details.
 
 Color coding:
   - base tables (raw data)        : grey

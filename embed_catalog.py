@@ -2,7 +2,7 @@
 Generate and store embeddings for every asset in the catalog.
 Run this once (or re-run whenever catalog_metadata.json changes).
 
-Output: embeddings.json  — { asset_name: [float, float, ...] }
+Writes embeddings.json, holding { asset_name: [float, float, ...] }
 
 Uses the model named in embedding_config.py (free tier: 5 req/min).
 """

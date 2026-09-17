@@ -1,4 +1,4 @@
-# database — regenerate with: python3 setup_db.py
+# database, regenerate with: python3 setup_db.py
 lumen.db
 
 # old archive
@@ -13,5 +13,5 @@ __pycache__/
 # macOS
 .DS_Store
 
-# secrets — never commit
+# secrets, never commit
 .env*

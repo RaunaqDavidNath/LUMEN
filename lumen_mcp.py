@@ -1,12 +1,12 @@
 """
-Lumen MCP Server — exposes the Lumen data catalog to Claude Desktop.
+Lumen MCP Server. Exposes the Lumen data catalog to Claude Desktop.
 
 Tools:
-  list_assets          — overview of every table/view in the catalog
-  search_catalog       — keyword search across names, descriptions, columns, owners
-  get_asset_details    — full metadata for one asset (columns, lineage, SQL, owner)
-  get_lineage          — upstream + downstream lineage for any asset
-  semantic_search      — embedding-based search by meaning (requires embeddings.json)
+  list_assets          - overview of every table/view in the catalog
+  search_catalog       - keyword search across names, descriptions, columns, owners
+  get_asset_details    - full metadata for one asset (columns, lineage, SQL, owner)
+  get_lineage          - upstream + downstream lineage for any asset
+  semantic_search      - embedding-based search by meaning (requires embeddings.json)
 """
 
 import json
@@ -41,7 +41,7 @@ def _downstream(catalog):
 def list_assets() -> str:
     """List every table and view in the Lumen catalog with a one-line summary."""
     catalog = _load()
-    lines = ["# Lumen Catalog — All Assets\n"]
+    lines = ["# Lumen Catalog - All Assets\n"]
     tables = [(n, i) for n, i in catalog.items() if i["type"] == "base_table"]
     views  = [(n, i) for n, i in catalog.items() if i["type"] == "view"]
 
@@ -49,12 +49,12 @@ def list_assets() -> str:
 
     lines.append("\n## Base Tables")
     for name, info in tables:
-        lines.append(f"- `{name}` — {info.get('glossary_term', '')} | Owner: {info.get('owner', '—')} | {len(info.get('columns', []))} columns")
+        lines.append(f"- `{name}` | {info.get('glossary_term', '')} | Owner: {info.get('owner', 'unknown')} | {len(info.get('columns', []))} columns")
 
     lines.append("\n## Views")
     for name, info in views:
-        ups = ", ".join(info.get("source_tables", [])) or "—"
-        lines.append(f"- `{name}` — {info.get('glossary_term', '')} | Owner: {info.get('owner', '—')} | Built from: {ups}")
+        ups = ", ".join(info.get("source_tables", [])) or "none"
+        lines.append(f"- `{name}` | {info.get('glossary_term', '')} | Owner: {info.get('owner', 'unknown')} | Built from: {ups}")
 
     return "\n".join(lines)
 
@@ -86,11 +86,11 @@ def search_catalog(query: str) -> str:
     if not results:
         return f"No assets found matching '{query}'."
 
-    lines = [f"# Search results for '{query}' — {len(results)} match(es)\n"]
+    lines = [f"# Search results for '{query}' ({len(results)} match(es))\n"]
     for name, info in results:
         kind = "TABLE" if info["type"] == "base_table" else "VIEW"
         lines.append(f"## `{name}` [{kind}]")
-        lines.append(f"**{info.get('glossary_term', '')}** | Owner: {info.get('owner', '—')}")
+        lines.append(f"**{info.get('glossary_term', '')}** | Owner: {info.get('owner', 'unknown')}")
         lines.append(info.get("description", ""))
         lines.append(f"Columns: {', '.join(info.get('columns', []))}\n")
 
@@ -118,7 +118,7 @@ def get_asset_details(name: str) -> str:
 
     lines = [
         f"# {info.get('glossary_term', name)} (`{name}`)",
-        f"**Type:** {kind}  |  **Owner:** {info.get('owner', '—')}",
+        f"**Type:** {kind}  |  **Owner:** {info.get('owner', 'unknown')}",
         f"\n{info.get('description', '')}\n",
         "## Columns",
     ]
@@ -138,7 +138,7 @@ def get_asset_details(name: str) -> str:
             sql = sql[create_idx:]
         lines.append(f"\n## SQL\n```sql\n{sql}\n```")
     else:
-        lines.append("\n_Raw base table — no transformation SQL._")
+        lines.append("\n_Raw base table with no transformation SQL._")
 
     return "\n".join(lines)
 
@@ -171,9 +171,9 @@ def get_lineage(name: str) -> str:
             t_info = catalog.get(t, {})
             kind = "TABLE" if t_info.get("type") == "base_table" else "VIEW"
             desc = t_info.get("glossary_term") or t_info.get("description", "")
-            lines.append(f"- `{t}` [{kind}] — {desc}")
+            lines.append(f"- `{t}` [{kind}] - {desc}")
     else:
-        lines.append("- _None — this is a raw source table_")
+        lines.append("- _None, this is a raw source table_")
 
     lines.append("\n## Downstream (assets that read from this)")
     if downstream:
@@ -181,9 +181,9 @@ def get_lineage(name: str) -> str:
             t_info = catalog.get(t, {})
             kind = "TABLE" if t_info.get("type") == "base_table" else "VIEW"
             desc = t_info.get("glossary_term") or t_info.get("description", "")
-            lines.append(f"- `{t}` [{kind}] — {desc}")
+            lines.append(f"- `{t}` [{kind}] - {desc}")
     else:
-        lines.append("- _None — this asset is not used by any downstream view_")
+        lines.append("- _None, this asset is not used by any downstream view_")
 
     # Multi-hop: show grandparents too
     if upstream:
@@ -203,7 +203,7 @@ def get_lineage(name: str) -> str:
 @mcp.tool()
 def semantic_search(query: str, top_k: int = 5) -> str:
     """
-    Search the catalog by meaning using vector similarity — finds relevant assets
+    Search the catalog by meaning using vector similarity. Finds relevant assets
     even if the exact words aren't in the name or description.
 
     Requires embeddings.json to exist (run embed_catalog.py first).
@@ -253,12 +253,12 @@ def semantic_search(query: str, top_k: int = 5) -> str:
         reverse=True,
     )[:top_k]
 
-    lines = [f"# Semantic search: '{query}' — top {top_k} results\n"]
+    lines = [f"# Semantic search for '{query}' (top {top_k} results)\n"]
     for rank, (score, name) in enumerate(scored, 1):
         info = catalog.get(name, {})
         kind = "TABLE" if info.get("type") == "base_table" else "VIEW"
         lines.append(f"## {rank}. `{name}` [{kind}]  (similarity: {score:.3f})")
-        lines.append(f"**{info.get('glossary_term', '')}** | Owner: {info.get('owner', '—')}")
+        lines.append(f"**{info.get('glossary_term', '')}** | Owner: {info.get('owner', 'unknown')}")
         lines.append(info.get("description", ""))
         lines.append(f"Columns: {', '.join(info.get('columns', []))}\n")
 

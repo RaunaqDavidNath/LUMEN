@@ -1,6 +1,6 @@
 -- transformations.sql
 -- ----------------------------------------------------------------------
--- These are "transformation models" — the kind of layered SQL views you'd
+-- These are "transformation models", the kind of layered SQL views you'd
 -- find in a real warehouse (think dbt staging -> intermediate -> mart
 -- layers). Each one builds on base tables and/or earlier views, which is
 -- exactly what creates the multi-hop "lineage graph" we want to extract.

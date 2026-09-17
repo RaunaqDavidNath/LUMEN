@@ -12,7 +12,7 @@ then builds two lineage graphs using networkx:
 Both graphs are saved as JSON (node-link format) so later steps (Claude
 description generation, Streamlit UI) can load them without re-parsing SQL.
 
-We also build catalog_metadata.json — a dict of every table/view with its
+We also build catalog_metadata.json, a dict of every table/view with its
 type, columns, and (for views) the SQL definition + direct upstream tables.
 This is the raw material that Claude will later turn into human-readable
 descriptions.
@@ -70,7 +70,7 @@ def resolve_table(column, alias_map, source_tables):
         return alias_map.get(column.table, column.table)
     if len(source_tables) == 1:
         return source_tables[0]
-    return None  # ambiguous — would need schema-aware resolution
+    return None  # ambiguous, would need schema-aware resolution
 
 
 def parse_transformations(path):
@@ -190,11 +190,11 @@ def main():
     if carried:
         print(f"Kept {carried} AI-enriched fields from the previous catalog")
 
-    print("\nExample — full lineage of 'customer_lifetime_value':")
+    print("\nFull lineage of 'customer_lifetime_value':")
     for ancestor in nx.ancestors(table_graph, "customer_lifetime_value"):
         print(f"  {ancestor} -> ... -> customer_lifetime_value")
 
-    print("\nExample — what breaks if 'orders' changes (downstream impact):")
+    print("\nWhat breaks if 'orders' changes (downstream impact):")
     for descendant in nx.descendants(table_graph, "orders"):
         print(f"  orders -> ... -> {descendant}")
 

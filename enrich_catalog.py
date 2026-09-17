@@ -67,7 +67,7 @@ def main():
             info["description"] = result.get("description", "")
             info["glossary_term"] = result.get("glossary_term", "")
             info["owner"] = result.get("owner", "")
-            print(f"done — {result.get('glossary_term', '')}")
+            print(f"done ({result.get('glossary_term', '')})")
         except Exception as e:
             print(f"ERROR: {e}")
         time.sleep(13)  # free tier: 5 req/min → 1 every 13s

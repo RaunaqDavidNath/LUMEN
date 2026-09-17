@@ -2,7 +2,7 @@
 setup_db.py
 -----------
 Creates a small SQLite database (lumen.db) with a simple e-commerce schema
-and sample data. This is our "raw data layer" — the base tables that the
+and sample data. This is our "raw data layer", the base tables that the
 transformation queries (transformations.sql) will build on top of.
 
 Schema:

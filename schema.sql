@@ -1,6 +1,6 @@
 -- schema.sql
 -- ----------------------------------------------------------------------
--- Base ("raw") tables — the roots of our lineage graph. Everything in
+-- Base ("raw") tables, the roots of our lineage graph. Everything in
 -- transformations.sql is ultimately derived from these.
 -- ----------------------------------------------------------------------
 

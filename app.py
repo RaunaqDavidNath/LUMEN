@@ -125,7 +125,7 @@ if st.session_state.selected:
     st.markdown(info.get("description", ""))
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Owner", info.get("owner", "—"))
+    c1.metric("Owner", info.get("owner", "unknown"))
     c2.metric("Type", label)
     c3.metric("Columns", len(info.get("columns", [])))
     c4.metric("Upstream deps", len(info.get("source_tables", [])))
@@ -136,7 +136,7 @@ if st.session_state.selected:
     with tab1:
         col_lineage = info.get("column_lineage", {})
         rows = [
-            {"Column": col, "Derived from": ", ".join(col_lineage.get(col, [])) or "—"}
+            {"Column": col, "Derived from": ", ".join(col_lineage.get(col, [])) or "none"}
             for col in info.get("columns", [])
         ]
         st.table(rows)
@@ -157,7 +157,7 @@ if st.session_state.selected:
                         unsafe_allow_html=True,
                     )
             else:
-                st.info("Raw source table — no upstream dependencies.")
+                st.info("Raw source table with no upstream dependencies.")
         with cd:
             st.markdown("#### Downstream")
             st.caption("This asset is used by:")
@@ -178,7 +178,7 @@ if st.session_state.selected:
             create_idx = sql.upper().find("CREATE VIEW")
             st.code(sql[create_idx:] if create_idx >= 0 else sql, language="sql")
         else:
-            st.info("Raw base table — defined in schema.sql, no transformation SQL.")
+            st.info("Raw base table, defined in schema.sql with no transformation SQL.")
 
     st.stop()
 
@@ -190,7 +190,9 @@ st.caption("Search and explore your data warehouse assets")
 col_search, col_toggle = st.columns([5, 1])
 with col_search:
     search = st.text_input(
-        "", placeholder="Search by name, description, column, owner...", label_visibility="collapsed"
+        "Search the catalog",
+        placeholder="Search by name, description, column, owner...",
+        label_visibility="collapsed",
     )
 with col_toggle:
     semantic_on = st.toggle(
@@ -222,7 +224,7 @@ def semantic_results(query):
     """Return assets ranked by cosine similarity to the query embedding."""
     query_vec = get_query_embedding(query)
     if query_vec is None:
-        st.warning("GEMINI_API_KEY not set — falling back to keyword search.")
+        st.warning("GEMINI_API_KEY not set, falling back to keyword search.")
         return {n: i for n, i in catalog.items() if keyword_matches(n, i)}
 
     scored = []
@@ -280,7 +282,7 @@ for row_start in range(0, len(names), COLS):
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    f"<small style='color:#888'>Owner: {info.get('owner', '—')}</small>",
+                    f"<small style='color:#888'>Owner: {info.get('owner', 'unknown')}</small>",
                     unsafe_allow_html=True,
                 )
                 m1, m2, m3 = st.columns(3)
