@@ -1,4 +1,4 @@
-# Lumen — Active Metadata Catalog
+# Lumen - Active Metadata Catalog
 
 Lumen is a lightweight active-metadata catalog that ingests a SQL-based data warehouse, automatically extracts table and column-level lineage, enriches every asset with AI-generated descriptions, and exposes the catalog through a search UI and an MCP server for AI agents.
 
@@ -6,11 +6,11 @@ Lumen is a lightweight active-metadata catalog that ingests a SQL-based data war
 
 ## Features
 
-- **Automatic lineage extraction** — parses SQL views to build a full dependency graph at both table and column level
-- **AI enrichment** — generates a plain-English description, business glossary term, and owner team for every asset
-- **Semantic search** — search by meaning using vector embeddings, not just keywords
-- **Streamlit UI** — browse, filter, and search the catalog with a clean card-based interface
-- **MCP server** — exposes the catalog as tools so an AI agent can query it conversationally
+- **Automatic lineage extraction.** Parses SQL views to build a full dependency graph at both table and column level.
+- **AI enrichment.** Generates a plain-English description, business glossary term, and owner team for every asset.
+- **Semantic search.** Searches by meaning using vector embeddings, not just keywords.
+- **Streamlit UI.** Browse, filter, and search the catalog with a clean card-based interface.
+- **MCP server.** Exposes the catalog as tools so an AI agent can query it conversationally.
 
 ---
 
@@ -45,11 +45,11 @@ column_lineage.json            ← 87 nodes, 64 edges
 
 ## Data model
 
-An e-commerce warehouse with three transformation layers:
+An e-commerce warehouse with three transformation layers.
 
 **Base tables (6):** `customers`, `orders`, `order_items`, `products`, `categories`, `suppliers`
 
-**Staging layer:** Light cleanup — drops cancelled orders, pre-computes line-level revenue
+**Staging layer:** Light cleanup that drops cancelled orders and pre-computes line-level revenue
 
 **Fact / Dimension layer:** `dim_customers`, `dim_products`, `fct_order_revenue`
 
@@ -70,7 +70,7 @@ files/
 ├── embed_catalog.py         # Generates embeddings for semantic search
 ├── app.py                   # Streamlit catalog UI
 ├── lumen_mcp.py             # MCP server for Claude Desktop
-├── catalog_metadata.json    # 21 assets — all AI-enriched
+├── catalog_metadata.json    # 21 assets, all AI-enriched
 ├── table_lineage.json       # Table-level lineage graph
 ├── column_lineage.json      # Column-level lineage graph
 ├── lineage_graph.html       # Interactive lineage visualization
@@ -96,7 +96,7 @@ python3 visualize_lineage.py
 
 Open `lineage_graph.html` in a browser to explore the lineage graph interactively.
 
-Re-running `lineage_parser.py` later is safe: it rebuilds structure and lineage from
+Re-running `lineage_parser.py` later is safe. It rebuilds structure and lineage from
 the `.sql` files while keeping any AI enrichment already in `catalog_metadata.json`.
 
 ### 3. Enrich the catalog with AI descriptions
@@ -146,7 +146,7 @@ Restart Claude Desktop. You can then ask it things like:
 |---|---|
 | `list_assets()` | Overview of all 21 tables and views |
 | `search_catalog(query)` | Keyword search across all metadata fields |
-| `get_asset_details(name)` | Full metadata: columns, lineage, SQL, owner |
+| `get_asset_details(name)` | Columns, lineage, SQL and owner for one asset |
 | `get_lineage(name)` | Upstream + downstream + 2-hop sources |
 | `semantic_search(query, top_k)` | Vector similarity search over catalog embeddings |
 
